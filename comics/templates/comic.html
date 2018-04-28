@@ -1,0 +1,109 @@
+<head>
+  <title>Longstair</title>
+  <style>
+
+    body {
+    font-family: Arial, Helvetica, sans-serif;
+    }
+
+    /* unvisited link */
+    a:link {
+    color: #DDDDDD;
+    }
+
+    /* visited link */
+    a:visited {
+    color: #DDDDDD;
+    }
+
+    /* mouse over link */
+    a:hover {
+    color: #FFFFFF;
+    }
+
+    /* selected link */
+    a:active {
+    color: #DDDDDD;
+    }
+
+
+    div.title {
+    font-size: 33pt;
+    padding-bottom: 29px;
+    }
+
+    div.comic {
+    padding-bottom: 25px;
+    font-size: 27pt;
+    }
+
+    div.pager {
+    font-size: 23pt;
+    text-decoration: none;
+    }
+
+    div.caption {
+    padding-left: 40px;
+    padding-right: 40px;
+    }
+  </style>
+</head>
+<body bgcolor="#333333" text="#FFFFFF" alink="#FFFFFF" vlink="#FFFFFF">
+  <center>
+
+    <div class="title">Longstair</div>
+
+    <div class="comic">
+      <img src="/static/{{ comic.filename }}" width=1200 />
+      <br />
+    </div>
+
+    <div class="pager">
+
+      &larr;
+
+      <a href="/1">Begin</a>
+      &nbsp;
+
+      {% if comic_prev %}
+      <a href="/{{ comic_prev.id }}">
+	{% endif %}
+	
+	Prev
+
+	{% if comic_prev %}
+      </a>
+      {% endif %}
+
+
+      <div style="display:inline-block; text-align: center;" class="caption">
+	{{ comic.name }}
+	<br>
+	<small>{{ comic.created|date:"Y-m-d" }}</small>
+      </div>
+
+
+      {% if comic_next %}
+      <a href="/{{ comic_next.id }}">
+	{% endif %}
+	
+	Next
+	
+	{% if comic_next %}
+      </a>
+      {% endif %}
+
+      &nbsp;
+
+      <a href="/{{ comic_last.id }}">
+	End
+	</a>
+
+
+      &rarr;
+
+    </div>
+
+  </center>
+</body>
+</html>
