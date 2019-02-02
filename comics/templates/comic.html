@@ -6,26 +6,21 @@
     font-family: Arial, Helvetica, sans-serif;
     }
 
-    /* unvisited link */
     a:link {
     color: #DDDDDD;
     }
 
-    /* visited link */
     a:visited {
     color: #DDDDDD;
     }
 
-    /* mouse over link */
     a:hover {
     color: #FFFFFF;
     }
 
-    /* selected link */
     a:active {
     color: #DDDDDD;
     }
-
 
     div.title {
     font-size: 33pt;
@@ -45,6 +40,16 @@
     div.caption {
     padding-left: 40px;
     padding-right: 40px;
+    width: 700px;
+    }
+
+    div#more {
+    padding-top:35px;
+    font-size: 12pt;
+    }
+  
+    div#email { 
+    font-size: 5pt;
     }
   </style>
 </head>
@@ -54,7 +59,7 @@
     <div class="title">Longstair</div>
 
     <div class="comic">
-      <img src="/static/{{ comic.filename }}" width=1200 />
+      <img src="/static/{{ comic.filename }}" height=675 />
       <br />
     </div>
 
@@ -75,13 +80,11 @@
       </a>
       {% endif %}
 
-
       <div style="display:inline-block; text-align: center;" class="caption">
 	{{ comic.name }}
 	<br>
 	<small>{{ comic.created|date:"Y-m-d" }}</small>
       </div>
-
 
       {% if comic_next %}
       <a href="/{{ comic_next.id }}">
@@ -98,12 +101,22 @@
       <a href="/{{ comic_last.id }}">
 	End
 	</a>
-
-
       &rarr;
-
     </div>
 
+    <div id="more">
+      More:
+      <a href="https://www.youtube.com/channel/UCoYAEmqxmpA_ZxyQrRHv0PQ">YouTube</a>
+      <a href="/static/writing.txt">Writing</a>
+      
+<!--
+      <a href="http://pio.longstair.com">Photos</a>, 
+      <a href="/static/oldindex.html">Old Site</a>,
+      <a href="https://github.com/Tecuya">GitHub</a>
+-->
+      <div id="email">smclean at gmail dot com</div>
+    </div>
+    
   </center>
 </body>
 </html>
