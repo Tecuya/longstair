@@ -19,9 +19,16 @@ from django.conf.urls.static import static
 from django.urls import path
 
 import comics.views
+import forest.views
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', comics.views.comic),
     path('<int:comic_id>', comics.views.comic, name='comic'),
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    path('forest', forest.views.node, name='node'),
+    path('forest/<str:node>', forest.views.node, name='node'),
+]
+
+if settings.DEBUG:
+    urlpatterns += staticfiles_urlpatterns()

@@ -45,10 +45,10 @@
 
     div#more {
     padding-top:35px;
-    font-size: 12pt;
+    font-size: 15pt;
     }
-  
-    div#email { 
+
+    div#email {
     font-size: 5pt;
     }
   </style>
@@ -73,7 +73,7 @@
       {% if comic_prev %}
       <a href="/{{ comic_prev.id }}">
 	{% endif %}
-	
+
 	Prev
 
 	{% if comic_prev %}
@@ -89,9 +89,9 @@
       {% if comic_next %}
       <a href="/{{ comic_next.id }}">
 	{% endif %}
-	
+
 	Next
-	
+
 	{% if comic_next %}
       </a>
       {% endif %}
@@ -105,18 +105,17 @@
     </div>
 
     <div id="more">
-      More:
       <a href="https://www.youtube.com/channel/UCoYAEmqxmpA_ZxyQrRHv0PQ">YouTube</a>
-      <a href="/static/writing.txt">Writing</a>
-      
+      <a href="/forest/forever">Writing</a>
+
 <!--
-      <a href="http://pio.longstair.com">Photos</a>, 
+      <a href="http://pio.longstair.com">Photos</a>,
       <a href="/static/oldindex.html">Old Site</a>,
       <a href="https://github.com/Tecuya">GitHub</a>
 -->
       <div id="email">smclean at gmail dot com</div>
     </div>
-    
+
   </center>
 </body>
 </html>

@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+  <div><a href="/">&lt;&lt; Back to comics</a></div>
+
+  <div class="node">
+    <h2>{{ node.name }}</h2>
+
+    {% autoescape off %}
+
+    {{ node.text }}
+
+    {% for relation in relations %}
+    <div class="relation" data-slug="{{ relation.slug }}">
+      {{ relation.text }}
+    </div>
+    {% endfor %}
+
+    <input type=text id=prompt>
+
+    {% endautoescape %}
+
+  </div>
+{% endblock %}

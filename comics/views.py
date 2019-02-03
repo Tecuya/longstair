@@ -6,12 +6,12 @@ def comic(request, comic_id=None):
 
     first_comic = Comic.objects.all().order_by('created')[0]
     last_comic = Comic.objects.all().order_by('-created')[0]
-    
+
     if comic_id != None:
         comic = Comic.objects.get(id=comic_id)
     else:
         comic = last_comic
-    
+
     next_comics = Comic.objects.filter(created__gt=comic.created).order_by('created')
     prev_comics = Comic.objects.filter(created__lt=comic.created).order_by('-created')
 
@@ -23,6 +23,4 @@ def comic(request, comic_id=None):
         'comic_last': last_comic
     }
 
-    print(ctx)
-    
     return render(request, 'comic.html', ctx)
