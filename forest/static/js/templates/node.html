@@ -1,0 +1,11 @@
+<h2><%= node.get('name') %></h2>
+
+<%= node.get('text') %>
+
+<% _.each(relations.models, function(relation) { %>
+<div class="relation" data-child-slug="<%= relation.get('child') %>">
+  <%= relation.get('text') %>
+</div>
+<% }) %>
+
+<input type=text id=prompt>

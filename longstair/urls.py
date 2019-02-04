@@ -15,19 +15,23 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.conf import settings
-from django.conf.urls.static import static
-from django.urls import path
+from django.urls import path, re_path, include
 
 import comics.views
 import forest.views
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+
     path('', comics.views.comic),
     path('<int:comic_id>', comics.views.comic, name='comic'),
-    path('forest', forest.views.node, name='node'),
-    path('forest/<str:node>', forest.views.node, name='node'),
+
+    re_path(r'^forest', forest.views.node, name='node'),
+
+    path('xhr/node_by_slug/<slug>', forest.views.xhr_node_by_slug, name='xhr_node_by_slug'),
+    path('xhr/relations_for_parent_node/<slug>', forest.views.xhr_relations_for_parent_node, name='xhr_relations_for_parent_node')
 ]
 
 if settings.DEBUG:

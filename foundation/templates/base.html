@@ -1,13 +1,13 @@
 {% load static %}
 <head>
   <title>Longstair</title>
-  <link rel="stylesheet" href="{% static "css/style.css" %}">
+  <link rel="stylesheet" href="{% static "css/style.css" %}" />
+  {% block extrahead %}
+  {% endblock %}
 </head>
-<body bgcolor="#333333" text="#FFFFFF" alink="#FFFFFF" vlink="#FFFFFF">
+<body>
   <div class="title">Longstair</div>
-
   {% block content %}
   {% endblock %}
-
 </body>
 </html>

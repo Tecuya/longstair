@@ -1,25 +1,18 @@
 {% extends 'base.html' %}
 
+{% block extrahead %}
+    <script type="text/javascript" src="/static/js/lib/require.js"></script>
+    <script type="text/javascript" src="/static/js/config.js"></script>
+    <script type="text/javascript">
+
+    require(['backbone', 'router'], function(Backbone, Router) {
+        new Router();
+        Backbone.history.start({pushState: true});
+    });
+
+    </script>
+{% endblock %}
+
 {% block content %}
-
-  <div><a href="/">&lt;&lt; Back to comics</a></div>
-
-  <div class="node">
-    <h2>{{ node.name }}</h2>
-
-    {% autoescape off %}
-
-    {{ node.text }}
-
-    {% for relation in relations %}
-    <div class="relation" data-slug="{{ relation.slug }}">
-      {{ relation.text }}
-    </div>
-    {% endfor %}
-
-    <input type=text id=prompt>
-
-    {% endautoescape %}
-
-  </div>
+  <div id="node" ></div>
 {% endblock %}

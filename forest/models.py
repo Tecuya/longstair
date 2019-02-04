@@ -14,6 +14,7 @@ class Node(models.Model):
 class Relation(models.Model):
     parent = models.ForeignKey('Node', related_name='parent_node', on_delete=models.CASCADE)
     child = models.ForeignKey('Node', related_name='child_node', on_delete=models.CASCADE)
+    slug = models.CharField(max_length=255, default="")
     author = models.ForeignKey(User, on_delete=models.PROTECT)
 
     text = models.TextField(default="")
