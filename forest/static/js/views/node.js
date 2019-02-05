@@ -8,16 +8,13 @@ define(
     function($, _, Backbone, Node, Relations, nodetpl) {
         return Backbone.View.extend({
 
-            min_fetch_interval: 1000,
-
             el: 'div#node',
 
             events: {
-                'keydown input#prompt': 'handle_prompt_keydown'
+                'keyup input#prompt': 'keypress'
             },
 
             loading: true,
-
             template: nodetpl,
 
             initialize: function(options) {
@@ -43,6 +40,7 @@ define(
 
                 this.relations.setElement('div#relations');
                 this.relations.render();
+                $('input#prompt').focus();
             },
 
             error: function() {
@@ -53,28 +51,19 @@ define(
                 Backbone.history.navigate('/forest/' + $(evt.target).data('child-slug'), true);
             },
 
-            handle_prompt_keydown: function(evt) {
-                var self = this;
+            keypress: function(evt) {
 
-                var contents = $('input#prompt').val();
-
-                // down arrow
                 if (evt.which == 40) {
                     $('div[tabindex=0]').focus();
                     return;
                 }
 
-                if (contents.length < 3) {
-                    return;
-                }
-
-                var milliseconds = new Date().getTime();
-
-                if (!this.lastfetch || (milliseconds - this.lastfetch) > this.min_fetch_interval) {
-
-                    this.relations.update_text(contents);
-                    this.lastfetch = milliseconds;
-                }
+                // without this short timeout it seems the event fires
+                // before jquerys val could get the updated text
+                var self = this;
+                window.setTimeout(
+                    function() { self.relations.update_text($('input#prompt').val()); },
+                    10);
             }
         });
     }

@@ -4,8 +4,8 @@ from django.contrib.auth.models import User
 
 class Node(models.Model):
     author = models.ForeignKey(User, on_delete=models.PROTECT)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
 
     name = models.CharField(max_length=255)
     slug = models.CharField(max_length=255, default='')
@@ -17,8 +17,8 @@ class Node(models.Model):
 
 class Relation(models.Model):
     author = models.ForeignKey(User, on_delete=models.PROTECT)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
 
     slug = models.CharField(max_length=255, default='')
     text = models.TextField(default='')

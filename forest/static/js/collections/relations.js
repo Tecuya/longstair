@@ -7,8 +7,7 @@ define(['backbone', 'models/relation'], function(Backbone, relation) {
             }
         },
         url: function() {
-            return '/xhr/fetch_relations_for_text/' +
-                this.parent + '/' + this.text;
+            return '/xhr/fetch_relations_for_text/' + this.parent + '/' + this.text;
         }
     });
 });

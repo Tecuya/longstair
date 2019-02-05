@@ -15,17 +15,22 @@ def xhr_node_by_slug(request, slug):
     return JsonResponse(
         {'name': node.name,
          'slug': node.slug,
-         'text': node.text},
+         'text': node.text,
+         'author': node.author.username,
+         'created': node.created.strftime('%Y-%m-%d')},
         safe=False)
 
 
 def xhr_relations_for_parent_node(request, slug):
     return JsonResponse(
         [{'text': r.text,
+          'slug': r.slug,
+
           'parent': r.parent.slug,
           'child': r.child.slug,
-          'slug': r.slug,
-          'author': r.author.username}
+
+          'author': r.author.username,
+          'created': r.created.strftime('%Y-%m-%d')}
          for r in Relation.objects.filter(parent__slug=slug)],
         safe=False)
 
@@ -33,10 +38,13 @@ def xhr_relations_for_parent_node(request, slug):
 def xhr_fetch_relations_for_text(request, slug, text):
     return JsonResponse(
         [{'text': r.text,
+          'slug': r.slug,
+
           'parent': r.parent.slug,
           'child': r.child.slug,
-          'slug': r.slug,
-          'author': r.author.username}
+
+          'author': r.author.username,
+          'created': r.created.strftime('%Y-%m-%d')}
          for r in Relation.objects.filter(parent__slug=slug, text__contains=text)],
         safe=False)
 

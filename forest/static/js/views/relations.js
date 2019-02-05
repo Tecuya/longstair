@@ -8,9 +8,11 @@ define(
     function($, _, Backbone, put_cursor_at_end, Relations, relationstpl) {
         return Backbone.View.extend({
 
+            min_fetch_interval: 1500,
+
             events: {
                 'click .relation': 'go_to_relation',
-                'keydown .relation': 'keypress'
+                'keypress .relation': 'keypress'
             },
 
             template: relationstpl,
@@ -28,15 +30,54 @@ define(
             },
 
             update_text: function(contents) {
+                if (contents.length == 0) {
+                    this.$el.html('');
+                    return;
+                }
+
+                if (contents.length < 3) {
+                    return;
+                }
+
                 var self = this;
-                this.relations.text = contents;
 
-                this.$el.html('...loading...');
+                var refresh = function() {
+                    self.lastfetch = new Date().getTime();
+                    self.relations.text = contents;
+                    self.relations.fetch({
+                        success: function() {
+                            self.render();
+                        },
+                        error: function() { self.error(); }
+                    });
+                };
 
-                this.relations.fetch({
-                    success: function() { self.render(); },
-                    error: function() { self.error(); }
-                });
+                // determine when the fetch should occur so as not to
+                // violate min_fetch_interval
+                var milliseconds = new Date().getTime();
+                var fetchwait = 0;
+                if (this.lastfetch) {
+                    var time_since_fetch = milliseconds - this.lastfetch;
+                    if (time_since_fetch > this.min_fetch_interval) {
+                        fetchwait = 0;
+                    } else {
+                        fetchwait = this.min_fetch_interval - time_since_fetch;
+                    }
+                }
+
+                var queuetime = new Date().getTime();
+
+                self.highest_queue_time = queuetime;
+
+                window.setTimeout(
+                    function() {
+                        // nuke superceded jobs
+                        if (queuetime < self.highest_queue_time) {
+                            return;
+                        }
+                        refresh();
+                    },
+                    fetchwait);
             },
 
             keypress: function(evt) {
@@ -58,6 +99,11 @@ define(
                     $('div[tabindex=' + (tabindex - 1) + ']').focus();
 
                 } else if (evt.which == 13) { // enter
+
+                    if ($(evt.target).id() == 'create_relation') {
+
+                    }
+
                     this.go_to_relation(evt);
                 }
             },
