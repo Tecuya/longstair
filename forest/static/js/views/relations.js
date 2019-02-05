@@ -30,7 +30,7 @@ define(
             },
 
             update_text: function(contents) {
-                if (contents.length == 0) {
+                if (contents.length == 0 || contents[0] == '/') {
                     this.$el.html('');
                     return;
                 }
@@ -45,9 +45,7 @@ define(
                     self.lastfetch = new Date().getTime();
                     self.relations.text = contents;
                     self.relations.fetch({
-                        success: function() {
-                            self.render();
-                        },
+                        success: function() { self.render(); },
                         error: function() { self.error(); }
                     });
                 };
@@ -72,9 +70,7 @@ define(
                 window.setTimeout(
                     function() {
                         // nuke superceded jobs
-                        if (queuetime < self.highest_queue_time) {
-                            return;
-                        }
+                        if (queuetime < self.highest_queue_time) return;
                         refresh();
                     },
                     fetchwait);

@@ -40,6 +40,7 @@ define(
 
                 this.relations.setElement('div#relations');
                 this.relations.render();
+
                 $('input#prompt').focus();
             },
 
@@ -48,7 +49,8 @@ define(
             },
 
             go_to_relation: function(evt) {
-                Backbone.history.navigate('/forest/' + $(evt.target).data('child-slug'), true);
+                Backbone.history.navigate(
+                    '/forest/' + $(evt.target).data('child-slug'), true);
             },
 
             keypress: function(evt) {
@@ -58,12 +60,17 @@ define(
                     return;
                 }
 
+                if (evt.which == 13) {
+                    var command = $('input#prompt').val();
+                    if (command == '/edit') {
+                        Backbone.history.navigate('/forest/' + this.model.get('slug') + '/edit', true);
+                    }
+                }
+
                 // without this short timeout it seems the event fires
                 // before jquerys val could get the updated text
                 var self = this;
-                window.setTimeout(
-                    function() { self.relations.update_text($('input#prompt').val()); },
-                    10);
+                window.setTimeout(function() { self.relations.update_text($('input#prompt').val()); }, 10);
             }
         });
     }

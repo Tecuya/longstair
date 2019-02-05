@@ -12,6 +12,13 @@ def xhr_node_by_slug(request, slug):
 
     node = nqs[0]
 
+    if request.method == 'POST':
+        doc = ujson.loads(request.body)
+        node.name = doc['name']
+        node.slug = doc['slug']
+        node.text = doc['text']
+        node.save()
+
     return JsonResponse(
         {'name': node.name,
          'slug': node.slug,

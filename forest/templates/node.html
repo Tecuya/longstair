@@ -9,7 +9,7 @@
         $.ajaxPrefilter(function(options, originalOptions, jqXHR) {
             options.xhrFields = { withCredentials: true };
             return jqXHR.setRequestHeader(
-                'X-CSRF-Token', $('input[name=csrfmiddlewaretoken]').val());
+                'X-CSRFToken', $('input[name=csrfmiddlewaretoken]').val());
         }); 
     });
 
