@@ -1,0 +1,5 @@
+<% _.each(relations.models, function(relation, idx) { %>
+<div class="relation" data-child-slug="<%= relation.get('child') %>" tabindex=<%= idx %>>
+  <%= relation.get('text') %>
+</div>
+<% }) %>

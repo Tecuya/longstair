@@ -58,3 +58,8 @@ div.relation:hover {
   background-color: #777;
   cursor: pointer;
 }
+
+div.relation:focus {
+  background-color: #555;
+  cursor: pointer;
+}

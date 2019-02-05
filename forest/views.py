@@ -13,22 +13,31 @@ def xhr_node_by_slug(request, slug):
     node = nqs[0]
 
     return JsonResponse(
-        {
-            'name': node.name,
-            'slug': node.slug,
-            'text': node.text
-        }, safe=False)
+        {'name': node.name,
+         'slug': node.slug,
+         'text': node.text},
+        safe=False)
 
 
 def xhr_relations_for_parent_node(request, slug):
     return JsonResponse(
-        [{
-            'text': r.text,
-            'parent': r.parent.slug,
-            'child': r.child.slug,
-            'slug': r.slug,
-            'author': r.author.username
-        } for r in Relation.objects.filter(parent__slug=slug)],
+        [{'text': r.text,
+          'parent': r.parent.slug,
+          'child': r.child.slug,
+          'slug': r.slug,
+          'author': r.author.username}
+         for r in Relation.objects.filter(parent__slug=slug)],
+        safe=False)
+
+
+def xhr_fetch_relations_for_text(request, slug, text):
+    return JsonResponse(
+        [{'text': r.text,
+          'parent': r.parent.slug,
+          'child': r.child.slug,
+          'slug': r.slug,
+          'author': r.author.username}
+         for r in Relation.objects.filter(parent__slug=slug, text__contains=text)],
         safe=False)
 
 

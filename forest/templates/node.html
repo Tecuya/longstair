@@ -4,6 +4,14 @@
     <script type="text/javascript" src="/static/js/lib/require.js"></script>
     <script type="text/javascript" src="/static/js/config.js"></script>
     <script type="text/javascript">
+    
+    require(['jquery'], function() {
+        $.ajaxPrefilter(function(options, originalOptions, jqXHR) {
+            options.xhrFields = { withCredentials: true };
+            return jqXHR.setRequestHeader(
+                'X-CSRF-Token', $('input[name=csrfmiddlewaretoken]').val());
+        }); 
+    });
 
     require(['backbone', 'router'], function(Backbone, Router) {
         new Router();
@@ -14,5 +22,6 @@
 {% endblock %}
 
 {% block content %}
+  {% csrf_token %}
   <div id="node" ></div>
 {% endblock %}
