@@ -110,8 +110,7 @@ define(
 
                 var dest_slug = this.$el.find('div.chosen_link_existing').data('slug');
                 if (dest_slug) {
-                    relation.set('destination-slug', dest_slug);
-
+                    relation.set('child', dest_slug);
                     save_relation(
                         function() {
                             Backbone.history.navigate('/forest/' + dest_slug, true);
@@ -119,21 +118,12 @@ define(
                     );
 
                 } else {
-
-                    var new_node_slug = relation_slug;
-                    var node = new Node({
-                        'name': relation_text,
-                        'slug': new_node_slug
-                    });
-
-                    node.save({
-                        success: function() {
-                            save_relation(
-                                function() {
-                                    Backbone.history.navigate('/forest/' + new_node_slug + '/edit', true);
-                                });
+                    relation.set('child', relation_slug);
+                    save_relation(
+                        function() {
+                            Backbone.history.navigate('/forest/' + relation_slug + '/edit', true);
                         }
-                    });
+                    );
                 }
 
             }

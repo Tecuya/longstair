@@ -5,6 +5,44 @@ import ujson
 from .models import Node, Relation
 
 
+def xhr_relation_by_slug(request, slug):
+
+    if request.method == 'POST':
+        doc = ujson.loads(request.body)
+
+        nqs = Node.objects.filter(slug=doc['parent'])
+        if len(nqs) == 0:
+            return HttpResponseNotFound('<h1>No such parent</h1>')
+        parent = nqs[0]
+
+        nqs = Node.objects.filter(slug=doc['child'])
+        if len(nqs) > 0:
+            child = nqs[0]
+
+        else:
+            child, created = Node.objects.get_or_create(
+                author=request.user,
+                name=doc['child'],
+                slug=doc['child'])
+
+        relation, created = Relation.objects.get_or_create(
+            author=request.user,
+            slug=doc['slug'],
+            parent=parent,
+            child=child,
+            text=doc['text'])
+
+    else:
+        return HttpResponseNotFound('<h1>No such relation</h1>')
+
+    return JsonResponse(
+        {'slug': relation.slug,
+         'text': relation.text,
+         'author': relation.author.username,
+         'created': relation.created.strftime('%Y-%m-%d')},
+        safe=False)
+
+
 def xhr_node_by_slug(request, slug):
     nqs = Node.objects.filter(slug=slug)
     if nqs is None or len(nqs) == 0:
