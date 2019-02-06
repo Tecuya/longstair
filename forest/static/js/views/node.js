@@ -8,7 +8,7 @@ define(
     function($, _, Backbone, Node, Relations, nodetpl) {
         return Backbone.View.extend({
 
-            el: 'div#node',
+            el: 'div#forest',
 
             events: {
                 'keyup input#prompt': 'keypress'
@@ -49,18 +49,17 @@ define(
             },
 
             go_to_relation: function(evt) {
-                Backbone.history.navigate(
-                    '/forest/' + $(evt.target).data('child-slug'), true);
+                Backbone.history.navigate('/forest/' + $(evt.target).data('child-slug'), true);
             },
 
             keypress: function(evt) {
 
-                if (evt.which == 40) {
+                if (evt.which == 40) { // down arrow
                     $('div[tabindex=0]').focus();
                     return;
                 }
 
-                if (evt.which == 13) {
+                if (evt.which == 13) { // enter
                     var command = $('input#prompt').val();
                     if (command == '/edit') {
                         Backbone.history.navigate('/forest/' + this.model.get('slug') + '/edit', true);

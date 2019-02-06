@@ -9,7 +9,7 @@ define(
     function($, _, Backbone, put_cursor_at_end, Node, Relations, nodeedittpl) {
 
         return Backbone.View.extend({
-            el: 'div#node',
+            el: 'div#forest',
             events: {
                 'click button#save': 'save'
             },

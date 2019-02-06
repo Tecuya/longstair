@@ -35,27 +35,29 @@ textarea {
   background-color: #777;
   color: white;
   font-size: 16pt;
+  padding: 8px;
 }
 
 input {
   background-color: #777;
   color: white;
   font-size: 16pt;
+  border: 2px solid white;
+  border-radius: 7px;
+  padding: 8px;
 }
 
 input#prompt {
-  border: 2px solid white;
-  border-radius: 7px;
   width: 100%;
   background-image: url('/static/greater-than.png');
   background-position: 5px 8px;
   background-repeat: no-repeat;
+  padding: 3px;
   padding-left: 20px;
   margin-top: 10px;
 }
 
-div.relation {
-  border-radius: 7px;
+div.list-item {
   border: 2px solid white;
   border-radius: 2px;
   background-color: #444;
@@ -63,12 +65,12 @@ div.relation {
   margin-bottom: 2px;
 }
 
-div.relation:hover {
+div.list-item:hover {
   background-color: #777;
   cursor: pointer;
 }
 
-div.relation:focus {
+div.list-item:focus {
   background-color: #555;
   cursor: pointer;
 }
@@ -84,7 +86,7 @@ small {
 }
 
 div.editbox {
-  padding: 5px;
+  padding: 9px;
 }
 
 button {
@@ -92,4 +94,23 @@ button {
   background-color: #777;
   color: white;
   font-size: 16pt;
+}
+
+div#relation_creation {
+  border: 2px solid white;
+  border-radius: 7px;
+  background-color: #444;
+  padding: 5px;
+  margin-bottom: 2px;
+  display: none;
+}
+
+
+h3 {
+  margin: 5px;
+  padding: 5px;
+}
+
+div.chosen_link_existing {
+  display: none;
 }

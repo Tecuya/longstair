@@ -1,13 +1,29 @@
-<% _.each(relations.models, function(relation, idx) { %>
-<div class="relation" data-child-slug="<%= relation.get('child') %>" tabindex=<%= idx %>>
-  <%= relation.get('text') %>
-  <%= relation.get('author') %>
-</div>
-<% }) %>
+<div id="relations_list"></div>
 
-<% if(relations.text && relations.text.length > 0) { %>
-<div class="relation" id="create_relation" tabindex=<%= relations.models.length %>>
-  Create this branch
-</div>
-<% } %>
+<div id="relation_creation">
+  <h3>Create branch</h3>
 
+  <div class="editbox">
+    Text<br>
+    <input name=text type=text size=80>
+  </div>
+
+  <div class="editbox">
+    Slug<br>
+    <input name=slug type=text size=80>
+  </div>
+
+  <div class="editbox choose_link_existing">
+    Link to existing branch<br>
+    <input name=destination type=text placeholder="(Create new)" size=80>
+    <div id="existing_list"></div>
+  </div>
+
+  <div class="editbox chosen_link_existing">
+  </div>
+
+  <div class="editbox">
+    <button id="create">Create</button>
+  </div>
+
+</div>

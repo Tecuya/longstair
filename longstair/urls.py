@@ -31,6 +31,7 @@ urlpatterns = [
     re_path(r'^forest', forest.views.node, name='node'),
 
     path('xhr/node_by_slug/<slug>', forest.views.xhr_node_by_slug, name='xhr_node_by_slug'),
+    path('xhr/nodes_for_text/<text>', forest.views.xhr_nodes_for_text, name='xhr_nodes_for_text'),
     path('xhr/relations_for_parent_node/<slug>', forest.views.xhr_relations_for_parent_node, name='xhr_relations_for_parent_node'),
     path('xhr/fetch_relations_for_text/<slug>/<text>', forest.views.xhr_fetch_relations_for_text, name='xhr_fetch_relations_for_text')
 ]

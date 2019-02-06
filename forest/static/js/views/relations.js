@@ -2,36 +2,35 @@ define(
     ['jquery',
         'underscore',
         'backbone',
-        'put_cursor_at_end',
+        'util/slugify',
+        'util/fetch_completions',
+        'views/node_list',
+        'views/relations_list',
+        'models/relation',
         'collections/relations',
         'tpl!templates/relations'],
-    function($, _, Backbone, put_cursor_at_end, Relations, relationstpl) {
+    function($, _, Backbone, slugify, fetch_completions, NodeList, RelationsList, Relation, Relations, relationstpl) {
         return Backbone.View.extend({
 
             min_fetch_interval: 1500,
 
-            events: {
-                'click .relation': 'go_to_relation',
-                'keypress .relation': 'keypress'
-            },
-
             template: relationstpl,
+
+            events: {
+                'keyup input[name=destination]': 'keypress_destination',
+                'keyup input[name=text]': 'keypress_text',
+                'click button#create': 'create'
+            },
 
             initialize: function(options) {
                 this.relations = new Relations([], { parent: options.parent });
-            },
-
-            error: function() {
-                this.$el.html('Server error.... reload?');
-            },
-
-            go_to_relation: function(evt) {
-                Backbone.history.navigate('/forest/' + $(evt.target).data('child-slug'), true);
+                this.relations_list = new RelationsList({ relations: this });
+                this.node_list = new NodeList({ relations: this });
             },
 
             update_text: function(contents) {
                 if (contents.length == 0 || contents[0] == '/') {
-                    this.$el.html('');
+                    this.render();
                     return;
                 }
 
@@ -41,72 +40,104 @@ define(
 
                 var self = this;
 
-                var refresh = function() {
-                    self.lastfetch = new Date().getTime();
-                    self.relations.text = contents;
-                    self.relations.fetch({
-                        success: function() { self.render(); },
-                        error: function() { self.error(); }
-                    });
-                };
-
-                // determine when the fetch should occur so as not to
-                // violate min_fetch_interval
-                var milliseconds = new Date().getTime();
-                var fetchwait = 0;
-                if (this.lastfetch) {
-                    var time_since_fetch = milliseconds - this.lastfetch;
-                    if (time_since_fetch > this.min_fetch_interval) {
-                        fetchwait = 0;
-                    } else {
-                        fetchwait = this.min_fetch_interval - time_since_fetch;
-                    }
-                }
-
-                var queuetime = new Date().getTime();
-
-                self.highest_queue_time = queuetime;
-
-                window.setTimeout(
+                fetch_completions(
+                    self.lastfetch,
                     function() {
-                        // nuke superceded jobs
-                        if (queuetime < self.highest_queue_time) return;
-                        refresh();
-                    },
-                    fetchwait);
-            },
-
-            keypress: function(evt) {
-                var target = $(evt.target);
-
-                var tabindex = target.attr('tabindex');
-
-                if (evt.which == 38) { // up arrow
-
-                    // if we are at the top of the list return to the prompt
-                    if (tabindex == 0) {
-                        $('input#prompt').focus().putCursorAtEnd();
-
-                    } else {
-                        $('div[tabindex=' + (tabindex + 1) + ']').focus();
-                    }
-
-                } else if (evt.which == 40) { // down arrow
-                    $('div[tabindex=' + (tabindex - 1) + ']').focus();
-
-                } else if (evt.which == 13) { // enter
-
-                    if ($(evt.target).id() == 'create_relation') {
-
-                    }
-
-                    this.go_to_relation(evt);
-                }
+                        self.lastfetch = new Date().getTime();
+                        self.relations.text = contents;
+                        self.relations.fetch({
+                            success: function() { self.relations_list.render(self.relations); },
+                            error: function() { self.$el.html('Server error.... reload?'); }
+                        });
+                    });
             },
 
             render: function() {
                 this.$el.html(this.template({ relations: this.relations }));
+                this.relations_list.setElement('div#relations_list');
+                this.node_list.setElement('div#existing_list');
+            },
+
+            keypress_text: function() {
+                var self = this;
+                window.setTimeout(
+                    function() {
+                        self.$el
+                            .find('input[name=slug]')
+                            .val(
+                            slugify(
+                                self.$el.find('input[name=text]').val()));
+                    }, 10);
+            },
+
+            keypress_destination: function(evt) {
+
+                if (evt.which == 40) { // down arrow
+                    $('div.node-list-item[tabindex=0]').focus();
+                    return;
+                }
+
+                this.node_list.update_text($('input[name=destination]').val());
+            },
+
+            create_to_existing_branch: function(node) {
+                this.$el.find('div.choose_link_existing').hide();
+                this.$el
+                    .find('div.chosen_link_existing')
+                    .html('Link to existing branch<br><i>"' + node.get('name') + '" by ' + node.get('author') + '</i>')
+                    .data('slug', node.get('slug'))
+                    .show();
+                this.$el.find('button#create').focus();
+            },
+
+            create: function() {
+                var save_relation = function(success) {
+                    relation.save({
+                        success: success,
+                        error: function() {
+                            self.$el.find('button#create').html('Save failed...?');
+                        }
+                    });
+                };
+
+                var relation = new Relation();
+
+                var relation_text = this.$el.find('input[name=text]').val();
+                var relation_slug = this.$el.find('input[name=slug]').val();
+                relation.set('text', relation_text);
+                relation.set('slug', relation_slug);
+                relation.set('parent', this.relations.parent);
+
+                var dest_slug = this.$el.find('div.chosen_link_existing').data('slug');
+                if (dest_slug) {
+                    relation.set('destination-slug', dest_slug);
+
+                    save_relation(
+                        function() {
+                            Backbone.history.navigate('/forest/' + dest_slug, true);
+                        }
+                    );
+
+                } else {
+
+                    var new_node_slug = relation_slug;
+                    var node = new Node({
+                        'name': relation_text,
+                        'slug': new_node_slug
+                    });
+
+                    node.save({
+                        success: function() {
+                            save_relation(
+                                function() {
+                                    Backbone.history.navigate('/forest/' + new_node_slug + '/edit', true);
+                                });
+                        }
+                    });
+                }
+
             }
+
         });
     }
 );

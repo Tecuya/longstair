@@ -56,5 +56,15 @@ def xhr_fetch_relations_for_text(request, slug, text):
         safe=False)
 
 
+def xhr_nodes_for_text(request, text):
+    return JsonResponse(
+        [{'name': n.name,
+          'slug': n.slug,
+          'author': n.author.username,
+          'created': n.created.strftime('%Y-%m-%d')}
+         for n in Node.objects.filter(name__contains=text)],
+        safe=False)
+
+
 def node(request):
     return render(request, 'node.html')
