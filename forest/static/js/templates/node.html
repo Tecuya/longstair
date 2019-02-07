@@ -1,11 +1,14 @@
-<h2><%= node.get('name') %></h2>
+<div class="node_view">
 
-<%= node.get('text') %>
+  <div class="node_title"><%= node.get('name') %></div>
 
-<input type=text id=prompt>
-<div id="relations"></div>
+  <div class="node_attribution">
+    <small>Created <%= node.get('created') %> by <%= node.get('author') %></small>
+  </div>
 
-<p>
-  <small>Created <%= node.get('created') %> by <%= node.get('author') %></small>
-</p>
+  <div class="node_text">
+    <%= node.get('text') %>
+  </div>
+
+</div>
 

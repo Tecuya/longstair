@@ -1,23 +1,22 @@
-<div class="editbox">
-  Name<br>
-  <input name=name type=text size=100 value="<%= node.get('name') %>">
+<div class="node_edit">
+
+  <div class="editbox">
+    Name<br>
+    <input name=name type=text size=100 value="<%= node.get('name') %>">
+  </div>
+
+  <div class="editbox">
+    Slug<br>
+    <input name=slug type=text size=100 value="<%= node.get('slug') %>">
+  </div>
+
+  <div class="editbox">
+    Text<br>
+    <textarea name=text rows=10 cols=120><%= node.get('text') %></textarea>
+  </div>
+
+  <div class="editbox">
+    <button id="save">Save</button>
+  </div>
+
 </div>
-
-<div class="editbox">
-  Slug<br>
-  <input name=slug type=text size=100 value="<%= node.get('slug') %>">
-</div>
-
-<div class="editbox">
-  Text<br>
-  <textarea name=text rows=10 cols=120><%= node.get('text') %></textarea>
-</div>
-
-<div class="editbox">
-  <button id="save">Save</button>
-</div>
-
-<p>
-  <small>Created <%= node.get('created') %> by <%= node.get('author') %></small>
-</p>
-

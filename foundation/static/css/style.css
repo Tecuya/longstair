@@ -57,20 +57,20 @@ input#prompt {
   margin-top: 10px;
 }
 
-div.list-item {
+div.list_item {
   border: 2px solid white;
   border-radius: 2px;
-  background-color: #444;
+  background-color: #222;
   padding: 5px;
   margin-bottom: 2px;
 }
 
-div.list-item:hover {
+div.list_item:hover {
   background-color: #777;
   cursor: pointer;
 }
 
-div.list-item:focus {
+div.list_item:focus {
   background-color: #555;
   cursor: pointer;
 }
@@ -105,12 +105,33 @@ div#relation_creation {
   display: none;
 }
 
-
-h3 {
-  margin: 5px;
-  padding: 5px;
+div.node_title {
+  font-size: 19pt;
+  font-weight: bold;
 }
 
 div.chosen_link_existing {
   display: none;
 }
+
+div#forest {
+  display: flex;
+  flex-flow: column;
+  align-items: stretch;
+  height: 90%;
+}
+
+div#text_area {
+  background-color: #222;
+  flex: 0 1 auto;
+  overflow: auto;
+  height: 100%;
+  padding: 10px;
+}
+
+div#user_area {
+  flex: 1 1 auto;
+  height: 500px;
+}
+
+

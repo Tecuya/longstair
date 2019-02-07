@@ -18,66 +18,59 @@ define(
 
             events: {
                 'keyup input[name=destination]': 'keypress_destination',
-                'keyup input[name=text]': 'keypress_text',
+                'keyup input[name=text]': 'keypress_creation_text',
                 'click button#create': 'create'
             },
 
-            initialize: function(options) {
-                this.relations = new Relations([], { parent: options.parent });
-                this.relations_list = new RelationsList({ relations: this });
-                this.node_list = new NodeList({ relations: this });
+            elements: {
+                'div_creation': 'div#relation_creation',
+                'input_creation_text': 'input#relation_creation_text'
             },
 
-            update_text: function(contents) {
-                if (contents.length == 0 || contents[0] == '/') {
-                    this.render();
-                    return;
-                }
+            initialize: function(options) {
+                this.relations_list_view = new RelationsList({ relations_view: this });
+                this.node_list_view = new NodeList({ relations_view: this });
+            },
 
-                if (contents.length < 3) {
-                    return;
-                }
-
-                var self = this;
-
-                fetch_completions(
-                    self.lastfetch,
-                    function() {
-                        self.lastfetch = new Date().getTime();
-                        self.relations.text = contents;
-                        self.relations.fetch({
-                            success: function() { self.relations_list.render(self.relations); },
-                            error: function() { self.$el.html('Server error.... reload?'); }
-                        });
-                    });
+            set_relations_collection: function(relations_collection) {
+                this.relations_collection = relations_collection;
             },
 
             render: function() {
                 this.$el.html(this.template({ relations: this.relations }));
-                this.relations_list.setElement('div#relations_list');
-                this.node_list.setElement('div#existing_list');
+
+                this.relations_list_view.setElement('div#relations_list');
+                this.node_list_view.setElement('div#existing_list');
             },
 
-            keypress_text: function() {
+            render_list: function() {
+                this.relations_list_view.render(this.relations_collection);
+            },
+
+            keypress_creation_text: function(evt) {
                 var self = this;
+
+                if (evt && evt.which == 38) { // up arrow
+                    // back to highest tabindex of relations_list
+                    $('div.relation[tabindex=' + this.relations.models.length + ']').focus();
+                }
+
                 window.setTimeout(
                     function() {
                         self.$el
                             .find('input[name=slug]')
-                            .val(
-                            slugify(
-                                self.$el.find('input[name=text]').val()));
+                            .val(slugify(self.$el.find('input[name=text]').val()));
                     }, 10);
             },
 
             keypress_destination: function(evt) {
 
                 if (evt.which == 40) { // down arrow
-                    $('div.node-list-item[tabindex=0]').focus();
+                    $('div.node_list_item[tabindex=0]').focus();
                     return;
                 }
 
-                this.node_list.update_text($('input[name=destination]').val());
+                this.node_list_view.update_text($('input[name=destination]').val());
             },
 
             create_to_existing_branch: function(node) {
@@ -92,12 +85,14 @@ define(
 
             create: function() {
                 var save_relation = function(success) {
-                    relation.save({
-                        success: success,
-                        error: function() {
-                            self.$el.find('button#create').html('Save failed...?');
-                        }
-                    });
+                    relation.save(
+                        {},
+                        {
+                            success: success,
+                            error: function() {
+                                self.$el.find('button#create').html('Save failed...?');
+                            }
+                        });
                 };
 
                 var relation = new Relation();
@@ -106,26 +101,29 @@ define(
                 var relation_slug = this.$el.find('input[name=slug]').val();
                 relation.set('text', relation_text);
                 relation.set('slug', relation_slug);
-                relation.set('parent', this.relations.parent);
+                relation.set('parent', this.relations_collection.parent_node.get('slug'));
 
-                var dest_slug = this.$el.find('div.chosen_link_existing').data('slug');
+                var chosen_link_existing = this.$el.find('div.chosen_link_existing');
+                var dest_slug = chosen_link_existing.data('slug');
                 if (dest_slug) {
                     relation.set('child', dest_slug);
-                    save_relation(
-                        function() {
-                            Backbone.history.navigate('/forest/' + dest_slug, true);
-                        }
-                    );
+                    save_relation(function() { Backbone.history.navigate('/forest/' + dest_slug, true); });
 
                 } else {
                     relation.set('child', relation_slug);
-                    save_relation(
-                        function() {
-                            Backbone.history.navigate('/forest/' + relation_slug + '/edit', true);
-                        }
-                    );
+                    save_relation(function() { Backbone.history.navigate('/forest/' + relation_slug + '/edit', true); });
                 }
+            },
 
+            create_relation: function() {
+                var self = this;
+
+                // unhide
+                this.$el.find(this.elements.div_creation).css('display', 'inline-block');
+
+                // populate text and fire event
+                this.$el.find(this.elements.input_creation_text).val($('input#prompt').val()).focus().putCursorAtEnd();
+                this.keypress_creation_text();
             }
 
         });

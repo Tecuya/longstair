@@ -9,50 +9,39 @@ define(
     function($, _, Backbone, put_cursor_at_end, Node, Relations, nodeedittpl) {
 
         return Backbone.View.extend({
+
             el: 'div#forest',
+
             events: {
                 'click button#save': 'save'
             },
-            loading: false,
+
             template: nodeedittpl,
 
             initialize: function(options) {
-                var self = this;
-                this.model = new Node({ slug: options.slug });
-                this.model.fetch({
-                    success: function() {
-                        self.loading = false;
-                        self.render();
-                    },
-                    error: function() { self.error(); }
-                });
+                this.node = options.node;
             },
 
             render: function() {
-                if (this.loading) {
-                    return;
-                }
-
-                this.$el.html(this.template({ node: this.model }));
-
-                $('input[name=name]').focus();
+                this.$el.append(this.template({ node: this.node }));
             },
 
             error: function() {
-                this.$el.html('Server error.... reload?');
+                this.$el.append('Server error.... reload?');
             },
 
             save: function() {
-                this.model.set('name', $('input[name=name]').val());
-                this.model.set('slug', $('input[name=slug]').val());
-                this.model.set('text', $('textarea[name=text]').val());
+                this.node.set('name', $('input[name=name]').val());
+                this.node.set('slug', $('input[name=slug]').val());
+                this.node.set('text', $('textarea[name=text]').val());
 
                 var self = this;
-                this.model.on('sync', function() {
-                    Backbone.history.navigate('/forest/' + self.model.get('slug'), true);
+                this.node.on('sync', function() {
+                    self.$el.find('div.node_edit').hide();
+                    Backbone.history.navigate('/forest/' + self.node.get('slug'), true);
                 });
 
-                this.model.save();
+                this.node.save();
             }
         });
     }

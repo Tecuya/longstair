@@ -1,13 +1,19 @@
 define(['backbone', 'models/relation'], function(Backbone, relation) {
     return Backbone.Collection.extend({
         model: relation,
-        initialize: function(models, options) {
-            if (options) {
-                this.parent = options.parent;
-            }
+        initialize: function() { },
+
+        set_parent_node: function(node) {
+            this.parent_node = node;
         },
+
+        set_search_text: function(text) {
+            this.text = text;
+        },
+
         url: function() {
-            return '/xhr/fetch_relations_for_text/' + this.parent + '/' + this.text;
+            return '/xhr/relations_for_text/' +
+                this.parent_node.get('slug') + '/' + this.text;
         }
     });
 });

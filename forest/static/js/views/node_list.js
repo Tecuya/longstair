@@ -9,15 +9,16 @@ define(
     function($, _, Backbone, put_cursor_at_end, fetch_completions, Nodes, nodelisttpl) {
 
         return Backbone.View.extend({
+
             template: nodelisttpl,
 
             events: {
-                'keyup div.node-list-item': 'keypress_list',
-                'click div.node-list-item': 'click_list'
+                'keyup div.node_list_item': 'keypress_list',
+                'click div.node_list_item': 'click_list'
             },
 
             initialize: function(options) {
-                this.relations = options.relations;
+                this.relations_view = options.relations_view;
                 this.nodes = new Nodes();
             },
 
@@ -60,17 +61,17 @@ define(
                     if (tabindex == 0) {
                         $('input[name=destination]').focus();
                     } else {
-                        $('div.node-list-item[tabindex=' + (tabindex - 1) + ']').focus();
+                        $('div.node_list_item[tabindex=' + (tabindex - 1) + ']').focus();
                     }
                 } else if (evt.which == 40) { // down arrow
-                    $('div.node-list-item[tabindex=' + (tabindex + 1) + ']').focus();
+                    $('div.node_list_item[tabindex=' + (tabindex + 1) + ']').focus();
                 } else if (evt.which == 13) {
                     this.click_list(evt);
                 }
             },
 
             click_list: function(evt) {
-                this.relations.create_to_existing_branch(
+                this.relations_view.create_to_existing_branch(
                     this.nodes.findWhere({ slug: $(evt.target).data('slug') }));
             }
 

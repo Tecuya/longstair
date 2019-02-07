@@ -12,18 +12,18 @@ define(
             template: relationslisttpl,
 
             events: {
-                'click .relation': 'go_to_relation',
+                'click .relation': 'click_relation',
                 'keyup .relation': 'keypress_relation'
             },
 
             initialize: function(options) {
-                this.relations = options.relations;
+                this.relations_view = options.relations_view;
             },
 
             keypress_relation: function(evt) {
                 var target = $(evt.target);
 
-                var tabindex = target.attr('tabindex');
+                var tabindex = parseInt(target.attr('tabindex'));
 
                 if (evt.which == 38) { // up arrow
 
@@ -32,46 +32,41 @@ define(
                         $('input#prompt').focus().putCursorAtEnd();
 
                     } else {
-                        $('div.relation[tabindex=' + (tabindex - 1) + ']').focus();
+                        this.$el.find('div[tabindex=' + (tabindex - 1) + ']').focus();
                     }
 
                 } else if (evt.which == 40) { // down arrow
-                    $('div.relation[tabindex=' + (tabindex + 1) + ']').focus();
+
+                    var next_tabindex = this.$el.find('div[tabindex=' + (tabindex + 1) + ']');
+
+                    if (next_tabindex) {
+                        next_tabindex.focus();
+                    } else {
+                        this.$el.find('input#relation_creation_text').focus();
+                    }
 
                 } else if (evt.which == 13) { // enter
-
-                    if ($(evt.target).attr('id') == 'create_relation') {
-                        this.create_relation();
-                    } else {
-                        this.go_to_relation(evt);
-                    }
+                    this.click_relation(evt);
                 }
             },
 
-            go_to_relation: function(evt) {
+            click_relation: function(evt) {
                 if ($(evt.target).attr('id') == 'create_relation') {
-                    this.create_relation();
+                    this.relations_view.create_relation();
                 } else {
                     Backbone.history.navigate('/forest/' + $(evt.target).data('child-slug'), true);
                 }
             },
 
-            render: function(relations) {
+            render: function(relations_collection) {
                 // we will restore the users focused tabindex after rendering
                 var focused_tabindex = $('div.relation:focus').attr('tabindex');
 
-                this.$el.html(this.template({ relations: relations }));
+                this.$el.html(this.template({ relations: relations_collection }));
 
                 if (focused_tabindex) {
                     $('div.relation[tabindex=' + focused_tabindex + ']').focus();
                 }
-            },
-
-            create_relation: function() {
-                $('div#relation_creation').css('display', 'inline-block');
-                $('input[name=text]').val($('input#prompt').val()).focus().putCursorAtEnd();
-                this.relations.keypress_text(); // fire event as if we typed that in..
             }
-
         });
     });

@@ -1,11 +1,11 @@
 <% _.each(relations.models, function(relation, idx) { %>
-<div class="relation list-item" data-child-slug="<%= relation.get('child') %>" tabindex=<%= idx %>>
+<div class="relation list_item" data-child-slug="<%= relation.get('child') %>" tabindex=<%= idx %>>
   "<%= relation.get('text') %>" by <%= relation.get('author') %>
 </div>
 <% }) %>
 
 <% if(relations.text && relations.text.length > 0) { %>
-<div class="relation list-item" id="create_relation" tabindex=<%= relations.models.length %>>
+<div class="relation list_item" id="create_relation" tabindex=<%= relations.models.length %>>
   Create this branch
 </div>
 <% } %>

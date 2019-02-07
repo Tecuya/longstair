@@ -80,7 +80,7 @@ def xhr_relations_for_parent_node(request, slug):
         safe=False)
 
 
-def xhr_fetch_relations_for_text(request, slug, text):
+def xhr_relations_for_text(request, slug, text):
     return JsonResponse(
         [{'text': r.text,
           'slug': r.slug,
@@ -105,4 +105,4 @@ def xhr_nodes_for_text(request, text):
 
 
 def node(request):
-    return render(request, 'node.html')
+    return render(request, 'forest.html')
