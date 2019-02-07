@@ -19,12 +19,16 @@ define(
             events: {
                 'keyup input[name=destination]': 'keypress_destination',
                 'keyup input[name=text]': 'keypress_creation_text',
+                'keyup input[name=slug]': 'keypress_creation_slug',
                 'click button#create': 'create'
             },
 
             elements: {
                 'div_creation': 'div#relation_creation',
-                'input_creation_text': 'input#relation_creation_text'
+                'input_creation_text': 'input#relation_creation_text',
+                'input_creation_slug': 'input#relation_creation_slug',
+                'input_creation_destination': 'input#relation_creation_destination',
+                'input_creation_button': 'input#relation_creation_button'
             },
 
             initialize: function(options) {
@@ -47,12 +51,26 @@ define(
                 this.relations_list_view.render(this.relations_collection);
             },
 
+            keypress_creation_slug: function(evt) {
+                if (evt) {
+                    if (evt.which == 38) { // up arrow
+                        this.$el.find(this.elements.input_creation_text).focus();
+                    } else if (evt.which == 40) { // down arrow
+                        this.$el.find(this.elements.input_creation_destination).focus();
+                    }
+                }
+            },
+
             keypress_creation_text: function(evt) {
                 var self = this;
 
-                if (evt && evt.which == 38) { // up arrow
-                    // back to highest tabindex of relations_list
-                    $('div.relation[tabindex=' + this.relations.models.length + ']').focus();
+                if (evt) {
+                    if (evt.which == 38) { // up arrow
+                        // back to highest tabindex of relations_list
+                        $('div.relation[tabindex=' + this.relations_collection.models.length + ']').focus();
+                    } else if (evt.which == 40) { // down arrow
+                        this.$el.find(this.elements.input_creation_slug).focus();
+                    }
                 }
 
                 window.setTimeout(

@@ -39,10 +39,10 @@ define(
 
                     var next_tabindex = this.$el.find('div[tabindex=' + (tabindex + 1) + ']');
 
-                    if (next_tabindex) {
+                    if (next_tabindex.length > 0) {
                         next_tabindex.focus();
                     } else {
-                        this.$el.find('input#relation_creation_text').focus();
+                        $('input#relation_creation_text').focus();
                     }
 
                 } else if (evt.which == 13) { // enter

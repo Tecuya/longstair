@@ -2,7 +2,8 @@ define(
     ['jquery', 'underscore', 'backbone', 'models/node', 'views/relations',
         'collections/relations', 'views/node', 'views/node_edit',
         'util/fetch_completions', 'tpl!templates/forest'],
-    function($, _, Backbone, Node, RelationsView, Relations, NodeView, NodeEdit, fetch_completions, foresttpl) {
+    function($, _, Backbone, Node, RelationsView, Relations,
+        NodeView, NodeEdit, fetch_completions, foresttpl) {
 
         return Backbone.View.extend({
 
@@ -48,6 +49,10 @@ define(
                     if (prompt_contents == '/edit') {
                         Backbone.history.navigate('/forest/' + this.current_node.get('slug') + '/edit', true);
                     }
+
+                    if (prompt_contents.slice(0, 3) == '/go') {
+                        Backbone.history.navigate('/forest/' + prompt_contents.slice(4), true);
+                    }
                 }
 
                 // without this short timeout it seems the event fires
@@ -57,10 +62,6 @@ define(
                     function() {
                         if (prompt_contents.length == 0 || prompt_contents[0] == '/') {
                             self.relations_view.render();
-                            return;
-                        }
-
-                        if (prompt_contents.length < 3) {
                             return;
                         }
 
@@ -97,6 +98,10 @@ define(
                             self.relations_collection.set_parent_node(self.current_node);
                             self.relations_collection.set_search_text('');
                             self.relations_collection.reset();
+                            self.relations_collection.fetch({
+                                success: function() { self.relations_view.render_list(); },
+                                error: function() { self.$el.html('Server error.... reload?'); }
+                            });
 
                             // clear prompt
                             self.$el.find(self.elements.prompt).val('').focus();
@@ -126,10 +131,13 @@ define(
                             self.relations_collection.reset();
 
                             // clear prompt
-                            self.$el.find(self.elements.prompt).val('').focus();
+                            self.$el.find(self.elements.prompt).val('');
 
                             // redraw relations view
                             self.relations_view.render();
+
+                            // focus name
+                            self.$el.find('input[name=name]').focus();
                         },
                         error: function() { self.error(); }
                     }

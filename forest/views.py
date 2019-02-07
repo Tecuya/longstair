@@ -80,7 +80,15 @@ def xhr_relations_for_parent_node(request, slug):
         safe=False)
 
 
-def xhr_relations_for_text(request, slug, text):
+def xhr_relations(request, slug, text=None):
+
+    filters = {
+        'parent__slug': slug
+    }
+
+    if text:
+        filters['text__contains'] = text
+
     return JsonResponse(
         [{'text': r.text,
           'slug': r.slug,
@@ -90,7 +98,7 @@ def xhr_relations_for_text(request, slug, text):
 
           'author': r.author.username,
           'created': r.created.strftime('%Y-%m-%d')}
-         for r in Relation.objects.filter(parent__slug=slug, text__contains=text)],
+         for r in Relation.objects.filter(**filters)],
         safe=False)
 
 

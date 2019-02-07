@@ -12,8 +12,12 @@ define(['backbone', 'models/relation'], function(Backbone, relation) {
         },
 
         url: function() {
-            return '/xhr/relations_for_text/' +
-                this.parent_node.get('slug') + '/' + this.text;
+            if (this.text) {
+                return '/xhr/relations/' +
+                    this.parent_node.get('slug') + '/' + this.text;
+            } else {
+                return '/xhr/relations/' + this.parent_node.get('slug');
+            }
         }
     });
 });

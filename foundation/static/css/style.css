@@ -94,6 +94,9 @@ button {
   background-color: #777;
   color: white;
   font-size: 16pt;
+  width: 100%;
+  border-radius: 7px;
+  background-color: #222;
 }
 
 div#relation_creation {
@@ -134,4 +137,26 @@ div#user_area {
   height: 500px;
 }
 
+div.relation_list_item_left {
+  float: left;
+  display: inline-block;
+}
+
+div.relation_list_item_right {
+  float: right;
+  display: inline-block;
+}
+
+div.node_title {
+  float: left;
+}
+
+div.node_attribution {
+  float: right;
+}
+
+div.node_text {
+  clear: both;
+  padding-top: 8px;
+}
 
