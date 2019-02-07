@@ -120,6 +120,7 @@ define(
                 relation.set('text', relation_text);
                 relation.set('slug', relation_slug);
                 relation.set('parent', this.relations_collection.parent_node.get('slug'));
+                relation.set('child_text', relation_text);
 
                 var chosen_link_existing = this.$el.find('div.chosen_link_existing');
                 var dest_slug = chosen_link_existing.data('slug');

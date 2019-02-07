@@ -22,7 +22,7 @@ def xhr_relation_by_slug(request, slug):
         else:
             child, created = Node.objects.get_or_create(
                 author=request.user,
-                name=doc['child'],
+                name=doc['child_text'],
                 slug=doc['child'])
 
         relation, created = Relation.objects.get_or_create(
@@ -82,9 +82,7 @@ def xhr_relations_for_parent_node(request, slug):
 
 def xhr_relations(request, slug, text=None):
 
-    filters = {
-        'parent__slug': slug
-    }
+    filters = {'parent__slug': slug}
 
     if text:
         filters['text__contains'] = text
