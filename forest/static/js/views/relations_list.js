@@ -12,12 +12,13 @@ define(
             template: relationslisttpl,
 
             events: {
-                'click .relation': 'click_relation',
-                'keyup .relation': 'keypress_relation'
+                'click .relation_list_item': 'click_relation',
+                'keyup .relation_list_item': 'keypress_relation'
             },
 
             initialize: function(options) {
                 this.relations_view = options.relations_view;
+                this.forest_view = options.forest_view;
             },
 
             keypress_relation: function(evt) {
@@ -54,18 +55,19 @@ define(
                 if ($(evt.target).attr('id') == 'create_relation') {
                     this.relations_view.create_relation();
                 } else {
-                    Backbone.history.navigate('/forest/' + $(evt.target).data('child-slug'), true);
+                    var child_slug = $(evt.target).closest('div.relation_list_item').data('relation-slug');
+                    this.forest_view.go_to_relation(child_slug);
                 }
             },
 
             render: function(relations_collection) {
                 // we will restore the users focused tabindex after rendering
-                var focused_tabindex = $('div.relation:focus').attr('tabindex');
+                var focused_tabindex = $('div.relation_list_item:focus').attr('tabindex');
 
                 this.$el.html(this.template({ relations: relations_collection }));
 
                 if (focused_tabindex) {
-                    $('div.relation[tabindex=' + focused_tabindex + ']').focus();
+                    $('div.relation_list_item[tabindex=' + focused_tabindex + ']').focus();
                 }
             }
         });

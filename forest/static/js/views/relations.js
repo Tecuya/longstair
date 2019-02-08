@@ -32,8 +32,9 @@ define(
             },
 
             initialize: function(options) {
-                this.relations_list_view = new RelationsList({ relations_view: this });
-                this.node_list_view = new NodeList({ relations_view: this });
+                this.forest_view = options.forest_view;
+                this.relations_list_view = new RelationsList({ forest_view: this.forest_view, relations_view: this });
+                this.node_list_view = new NodeList({ forest_view: this.forest_view, relations_view: this });
             },
 
             set_relations_collection: function(relations_collection) {

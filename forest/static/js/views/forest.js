@@ -1,9 +1,9 @@
 define(
     ['jquery', 'underscore', 'backbone', 'models/node', 'views/relations',
         'collections/relations', 'views/node', 'views/node_edit',
-        'util/fetch_completions', 'tpl!templates/forest'],
+        'util/fetch_completions', 'tpl!templates/forest', 'tpl!templates/relation_history'],
     function($, _, Backbone, Node, RelationsView, Relations,
-        NodeView, NodeEdit, fetch_completions, foresttpl) {
+        NodeView, NodeEdit, fetch_completions, foresttpl, relationhistorytpl) {
 
         return Backbone.View.extend({
 
@@ -20,7 +20,7 @@ define(
             initialize: function() {
                 this.relations_collection = new Relations();
 
-                this.relations_view = new RelationsView();
+                this.relations_view = new RelationsView({ forest_view: this });
                 this.relations_view.set_relations_collection(this.relations_collection);
             },
 
@@ -78,8 +78,13 @@ define(
                     }, 10);
             },
 
-            go_to_relation: function(evt) {
-                Backbone.history.navigate('/forest/' + $(evt.target).data('child-slug'), true);
+            go_to_relation: function(slug) {
+                var selected_relation = this.relations_collection.findWhere({ 'slug': slug });
+
+                if (selected_relation) {
+                    this.$el.find('div#text_area').append(relationhistorytpl({ relation: selected_relation }));
+                    Backbone.history.navigate('/forest/' + selected_relation.get('child'), true);
+                }
             },
 
             node_view: function(slug) {
@@ -89,10 +94,12 @@ define(
                     {
                         success: function() {
 
-                            // create new nodeview and render (appends to text_area)
                             var node_view = new NodeView({ node: self.current_node });
                             node_view.setElement(self.$el.find('div#text_area'));
-                            node_view.render();
+
+                            if (self.current_node.get('slug') != '_') {
+                                node_view.render();
+                            }
 
                             // update relations collection for new node and reset
                             self.relations_collection.set_parent_node(self.current_node);
@@ -122,7 +129,7 @@ define(
                         success: function() {
                             // create new nodeview and render (appends to text_area)
                             var node_edit = new NodeEdit({ node: self.current_node });
-                            node_edit.setElement(self.$el.find('div#text_area'));
+                            node_edit.setElement(self.$el.find('div#user_area'));
                             node_edit.render();
 
                             // update relations collection for new node and reset

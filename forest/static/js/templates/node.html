@@ -1,14 +1,15 @@
 <div class="node_view">
 
-  <div class="node_title"><%= node.get('name') %></div>
-
-  <div class="node_attribution">
-    <small>Created <%= node.get('created') %> by <%= node.get('author') %></small>
-  </div>
-
   <div class="node_text">
-    <%= node.get('text') %>
-  </div>
+
+    <div class="node_attribution">
+      <small>
+        <b><%= node.get('name') %></b><br>
+        Created <%= node.get('created') %> by <%= node.get('author') %>
+      </small>
+    </div>
+
+     <%= node.get('text') %>
+   </div>
 
 </div>
-

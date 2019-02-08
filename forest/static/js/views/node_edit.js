@@ -24,6 +24,7 @@ define(
 
             render: function() {
                 this.$el.append(this.template({ node: this.node }));
+                this.$el.scrollTop(this.$el[0].scrollHeight);
             },
 
             error: function() {
@@ -37,7 +38,7 @@ define(
 
                 var self = this;
                 this.node.on('sync', function() {
-                    self.$el.find('div.node_edit').hide();
+                    self.$el.find('div.node_edit').remove();
                     Backbone.history.navigate('/forest/' + self.node.get('slug'), true);
                 });
 

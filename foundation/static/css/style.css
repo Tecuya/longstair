@@ -5,22 +5,18 @@ body {
   font-size: 16pt;
 }
 
-/* unvisited link */
 a:link {
   color: #DDDDDD;
 }
 
-/* visited link */
 a:visited {
   color: #DDDDDD;
 }
 
-/* mouse over link */
 a:hover {
   color: #FFFFFF;
 }
 
-/* selected link */
 a:active {
   color: #DDDDDD;
 }
@@ -55,6 +51,11 @@ input#prompt {
   padding: 3px;
   padding-left: 20px;
   margin-top: 10px;
+  font-family: monospace;
+}
+
+div.existing_relation {
+  font-family: monospace;
 }
 
 div.list_item {
@@ -65,6 +66,10 @@ div.list_item {
   margin-bottom: 2px;
 }
 
+div.relation_create {
+  background-color: #000;
+}
+
 div.list_item:hover {
   background-color: #777;
   cursor: pointer;
@@ -73,6 +78,10 @@ div.list_item:hover {
 div.list_item:focus {
   background-color: #555;
   cursor: pointer;
+}
+
+div.creation_title {
+  font-size: 17pt;
 }
 
 div.editlink {
@@ -86,7 +95,9 @@ small {
 }
 
 div.editbox {
+  font-size: 14pt;
   padding: 9px;
+  float: left;
 }
 
 button {
@@ -107,9 +118,11 @@ div#relation_creation {
   display: none;
 }
 
-div.node_title {
-  font-size: 19pt;
-  font-weight: bold;
+div.relation_history {
+  font-family: monospace;
+  padding-bottom: 8px;
+  border-bottom: dashed #444 2px;
+  margin-bottom: 8px;
 }
 
 div.chosen_link_existing {
@@ -124,7 +137,9 @@ div#forest {
 }
 
 div#text_area {
-  background-color: #222;
+  border: 2px solid #000;
+  border-radius: 7px;
+  background-color: #111;
   flex: 0 1 auto;
   overflow: auto;
   height: 100%;
@@ -146,16 +161,9 @@ div.relation_list_item_right {
   display: inline-block;
 }
 
-div.node_title {
-  float: left;
-}
-
 div.node_attribution {
+  text-align: right;
   float: right;
 }
 
-div.node_text {
-  clear: both;
-  padding-top: 8px;
-}
 

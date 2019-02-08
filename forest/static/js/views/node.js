@@ -16,6 +16,7 @@ define(
 
             render: function() {
                 this.$el.append(this.template({ node: this.node }));
+                this.$el.scrollTop(this.$el[0].scrollHeight);
             }
 
         });
