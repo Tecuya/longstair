@@ -94,6 +94,11 @@ small {
   font-size: 8pt;
 }
 
+div.node_text {
+  border-top: dashed #444 2px;
+  padding-top: 3px;
+}
+
 div.editbox {
   font-size: 14pt;
   padding: 9px;
@@ -121,7 +126,6 @@ div#relation_creation {
 div.relation_history {
   font-family: monospace;
   padding-bottom: 8px;
-  border-bottom: dashed #444 2px;
   margin-bottom: 8px;
   padding-top: 8px;
 }

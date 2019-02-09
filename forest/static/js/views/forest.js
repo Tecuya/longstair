@@ -71,9 +71,14 @@ define(
                         log_command();
                         Backbone.history.navigate('/forest/' + prompt_contents.slice(4), true);
 
+                    } else if (prompt_contents == '/help') {
+                        log_command();
+                        Backbone.history.navigate('/forest/help', true);
+
                     } else if (prompt_contents[0] == '/') {
                         log_command();
                         self.add_error('Invalid command: ' + prompt_contents);
+                        this.$el.find(this.elements.prompt).val('');
 
                     } else {
                         // behave as if down arrow.. this way double RET will create text
@@ -170,6 +175,9 @@ define(
                                 self.current_node_view.render(self.node_counter);
                             }
 
+                            // redraw relations view
+                            self.relations_view.render();
+
                             // update relations collection for new node and reset
                             self.relations_collection.set_parent_node(self.current_node);
                             self.relations_collection.set_search_text('');
@@ -182,8 +190,6 @@ define(
                             // clear prompt
                             self.$el.find(self.elements.prompt).val('').focus();
 
-                            // redraw relations view
-                            self.relations_view.render();
                         },
                         error: function(col, resp) { self.add_error(resp); }
                     }
