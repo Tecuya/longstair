@@ -76,7 +76,7 @@ def xhr_node_by_slug(request, slug):
 
     node = nqs[0]
 
-    if request.method == 'POST':
+    if request.method == 'POST' or request.method == 'PUT':
         doc = ujson.loads(request.body)
         node.name = doc['name']
         node.slug = doc['slug']

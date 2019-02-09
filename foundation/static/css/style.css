@@ -97,7 +97,6 @@ small {
 div.editbox {
   font-size: 14pt;
   padding: 9px;
-  float: left;
 }
 
 button {
@@ -171,6 +170,7 @@ div.relation_list_item_right {
 div.node_attribution {
   text-align: right;
   float: right;
+  font-size: 11pt;
 }
 
 input#relation_creation_text {

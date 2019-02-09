@@ -23,6 +23,8 @@ define(
 
                 this.relations_view = new RelationsView({ forest_view: this });
                 this.relations_view.set_relations_collection(this.relations_collection);
+
+                this.node_counter = 0;
             },
 
             render: function() {
@@ -53,8 +55,7 @@ define(
 
                     // enter
                     if (prompt_contents == '/edit') {
-                        log_command();
-                        Backbone.history.navigate('/forest/' + this.current_node.get('slug') + '/edit', true);
+                        self.node_edit();
 
                     } else if (prompt_contents == '/delete') {
                         log_command();
@@ -73,6 +74,7 @@ define(
                     } else if (prompt_contents[0] == '/') {
                         log_command();
                         self.add_error('Invalid command: ' + prompt_contents);
+
                     } else {
                         // behave as if down arrow.. this way double RET will create text
                         this.$el.find('div[tabindex=0]').focus();
@@ -148,22 +150,24 @@ define(
                 this.$el.find(this.elements.text_area).append('<div class="error">' + err + '</div>');
             },
 
-
             ////////////
             // routes
 
             node_view: function(slug) {
                 var self = this;
+
                 this.current_node = new Node({ slug: slug });
                 this.current_node.fetch(
                     {
                         success: function() {
 
-                            var node_view = new NodeView({ node: self.current_node });
-                            node_view.setElement(self.$el.find(self.elements.text_area));
+                            // each time will replace the old view with a new view
+                            self.current_node_view = new NodeView({ node: self.current_node });
+                            self.current_node_view.setElement(self.$el.find(self.elements.text_area));
 
+                            self.node_counter += 1;
                             if (self.current_node.get('slug') != '_') {
-                                node_view.render();
+                                self.current_node_view.render(self.node_counter);
                             }
 
                             // update relations collection for new node and reset
@@ -186,20 +190,17 @@ define(
                 );
             },
 
-            node_edit: function(slug) {
+            node_edit: function() {
                 var self = this;
-                this.current_node = new Node({ slug: slug });
                 this.current_node.fetch(
                     {
                         success: function() {
                             // create new nodeview and render (appends to text_area)
-                            var node_edit = new NodeEdit({ node: self.current_node });
-                            node_edit.setElement(self.$el.find('div#user_area'));
+                            var node_edit = new NodeEdit({ node: self.current_node, forest_view: self });
+                            node_edit.setElement('div#' + self.current_node_view.divid); // we will render over the top of the existing node view
                             node_edit.render();
 
-                            // update relations collection for new node and reset
-                            self.relations_collection.set_parent_node(self.current_node);
-                            self.relations_collection.set_search_text('');
+                            // clear out relations collection
                             self.relations_collection.reset();
 
                             // clear prompt
@@ -207,9 +208,6 @@ define(
 
                             // redraw relations view
                             self.relations_view.render();
-
-                            // focus name
-                            self.$el.find('input[name=name]').focus();
                         },
                         error: function(col, resp) { self.add_error(resp); }
                     }

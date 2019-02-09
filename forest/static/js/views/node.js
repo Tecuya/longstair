@@ -14,8 +14,9 @@ define(
                 this.node = options.node;
             },
 
-            render: function() {
-                this.$el.append(this.template({ node: this.node }));
+            render: function(counter) {
+                this.divid = 'node-' + counter;
+                this.$el.append(this.template({ node: this.node, divid: this.divid }));
                 this.$el.scrollTop(this.$el[0].scrollHeight);
             }
 
