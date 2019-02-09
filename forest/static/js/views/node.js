@@ -12,12 +12,12 @@ define(
 
             initialize: function(options) {
                 this.node = options.node;
+                this.forest_view = options.forest_view;
             },
 
             render: function(counter) {
                 this.divid = 'node-' + counter;
                 this.$el.append(this.template({ node: this.node, divid: this.divid }));
-                this.$el.scrollTop(this.$el[0].scrollHeight);
             }
 
         });

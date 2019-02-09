@@ -91,11 +91,6 @@ define(
                 // before jquerys val could get the updated text
                 window.setTimeout(
                     function() {
-                        if (prompt_contents.length == 0 || prompt_contents[0] == '/') {
-                            self.relations_view.render();
-                            return;
-                        }
-
                         fetch_completions(
                             self.lastfetch,
                             function() {
@@ -137,11 +132,8 @@ define(
                     {},
                     {
                         success: function() {
-                            if (creating) {
-                                // if we just created the relation we need to add it to the collection
-                                self.relations_collection.add(relation);
-                            }
-                            self.go_to_relation(relation.get('child'));
+                            self.relations_collection.add(relation);
+                            self.go_to_relation(relation.get('slug'));
                         },
                         error: function(err, resp) {
                             self.add_error(resp);
@@ -153,6 +145,11 @@ define(
 
             add_error: function(err) {
                 this.$el.find(this.elements.text_area).append('<div class="error">' + err + '</div>');
+            },
+
+            scroll_bottom: function() {
+                var text_area = this.$el.find(this.elements.text_area);
+                text_area.scrollTop(text_area[0].scrollHeight);
             },
 
             ////////////
@@ -167,21 +164,18 @@ define(
                         success: function() {
 
                             // each time will replace the old view with a new view
-                            self.current_node_view = new NodeView({ node: self.current_node });
+                            self.current_node_view = new NodeView({ node: self.current_node, forest_view: self });
                             self.current_node_view.setElement(self.$el.find(self.elements.text_area));
 
                             self.node_counter += 1;
                             if (self.current_node.get('slug') != '_') {
                                 self.current_node_view.render(self.node_counter);
+                                self.scroll_bottom();
                             }
-
-                            // redraw relations view
-                            self.relations_view.render();
 
                             // update relations collection for new node and reset
                             self.relations_collection.set_parent_node(self.current_node);
                             self.relations_collection.set_search_text('');
-                            self.relations_collection.reset();
                             self.relations_collection.fetch({
                                 success: function() { self.relations_view.render_list(); },
                                 error: function(col, resp) { self.add_error(resp); }
@@ -205,6 +199,7 @@ define(
                             var node_edit = new NodeEdit({ node: self.current_node, forest_view: self });
                             node_edit.setElement('div#' + self.current_node_view.divid); // we will render over the top of the existing node view
                             node_edit.render();
+                            self.scroll_bottom();
 
                             // clear out relations collection
                             self.relations_collection.reset();

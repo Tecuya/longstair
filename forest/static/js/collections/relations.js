@@ -13,8 +13,7 @@ define(['backbone', 'models/relation'], function(Backbone, relation) {
 
         url: function() {
             if (this.text) {
-                return '/xhr/relations/' +
-                    this.parent_node.get('slug') + '/' + this.text;
+                return '/xhr/relations/' + this.parent_node.get('slug') + '/' + this.text;
             } else {
                 return '/xhr/relations/' + this.parent_node.get('slug');
             }

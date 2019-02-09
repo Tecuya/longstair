@@ -23,7 +23,7 @@ define(
             },
 
             render: function() {
-                this.$el.html(this.template({ relations: this.relations }));
+                this.$el.html(this.template());
                 this.relations_list_view.setElement('div#relations_list');
             },
 
