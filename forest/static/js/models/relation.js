@@ -1,8 +1,13 @@
 define(['backbone'], function(Backbone) {
 
     return Backbone.Model.extend({
+        idAttribute: 'slug',
         url: function() {
-            return '/xhr/create_relation';
+            if (this.get('slug')) {
+                return '/xhr/delete_relation/' + this.get('slug');
+            } else {
+                return '/xhr/create_relation';
+            }
         }
     });
 

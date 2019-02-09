@@ -31,6 +31,8 @@ textarea {
   background-color: #777;
   color: white;
   font-size: 16pt;
+  border: 2px solid white;
+  border-radius: 7px;
   padding: 8px;
 }
 
@@ -107,11 +109,11 @@ div.editbox {
 button {
   background-color: #777;
   color: white;
-  font-size: 10pt;
+  font-size: 13pt;
   border-radius: 4px;
   background-color: #222;
   padding: 3px;
-  margin-left: 8px;
+  padding-left: 10px; padding-right: 10px;
 }
 
 div#relation_creation {
@@ -169,6 +171,8 @@ div.relation_list_item_left {
 div.relation_list_item_right {
   float: right;
   display: inline-block;
+  font-size: 8pt;
+  text-align: right;
 }
 
 div.node_attribution {
@@ -210,5 +214,11 @@ div.cleardiv {
 
 div.error {
   color: red;
+  font-weight: bold;
+}
+
+div.delete_relation {
+  text-decoration: underline;
+  cursor: pointer;
   font-weight: bold;
 }

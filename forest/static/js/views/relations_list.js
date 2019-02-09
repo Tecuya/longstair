@@ -65,7 +65,10 @@ define(
                 var clicked_item = $(evt.target).closest('.relation_list_item');
                 var clicked_item_id = clicked_item.attr('id');
 
-                if (clicked_item_id == 'create_relation') {
+                if ($(evt.target).hasClass('delete_relation')) {
+                    this.forest_view.delete_relation(clicked_item.data('relation-slug'));
+
+                } else if (clicked_item_id == 'create_relation') {
                     this.forest_view.create_relation_to_node();
 
                 } else if (clicked_item_id == 'create_relation_link') {

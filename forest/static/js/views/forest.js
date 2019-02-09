@@ -91,6 +91,10 @@ define(
                 // before jquerys val could get the updated text
                 window.setTimeout(
                     function() {
+                        if (prompt_contents.length == 0 || prompt_contents[0] == '/') {
+                            return;
+                        }
+
                         fetch_completions(
                             self.lastfetch,
                             function() {
@@ -140,7 +144,25 @@ define(
                         }
                     }
                 );
+            },
 
+            delete_relation: function(slug) {
+                var self = this;
+
+                var selected_relation = this.relations_collection.findWhere({ 'slug': slug });
+
+                if (selected_relation) {
+                    selected_relation.destroy({
+                        wait: true,
+                        success: function() {
+                            self.$el.find(self.elements.text_area).append(commandhistorytpl({ command: 'Deleted relation "' + slug + '"' }));
+                            self.node_view(self.current_node.get('slug'));
+                        },
+                        error: function(node, resp) {
+                            self.add_error(resp);
+                        }
+                    });
+                }
             },
 
             add_error: function(err) {

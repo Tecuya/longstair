@@ -7,6 +7,18 @@ from slugify import slugify
 from .models import Node, Relation
 
 
+def xhr_delete_relation(request, slug):
+
+    if request.method == 'DELETE':
+        rqs = Relation.objects.filter(slug=slug)
+        if len(rqs) == 0:
+            return HttpResponseNotFound('<h1>No such relation</h1>')
+
+        rqs[0].delete()
+
+    return JsonResponse({}, safe=False)
+
+
 def xhr_create_relation(request):
 
     if not request.method == 'POST':
@@ -79,7 +91,7 @@ def xhr_node_by_slug(request, slug):
     if request.method == 'POST' or request.method == 'PUT':
         doc = ujson.loads(request.body)
         node.name = doc['name']
-        node.slug = doc['slug']
+        node.slug = slugify(doc['name'])
         node.text = doc['text']
         node.save()
 

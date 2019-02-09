@@ -33,7 +33,6 @@ define(
 
             save: function() {
                 this.node.set('name', this.$el.find('input[name=name]').val());
-                this.node.set('slug', this.$el.find('input[name=slug]').val());
                 this.node.set('text', this.$el.find('textarea[name=text]').val());
 
                 var self = this;
