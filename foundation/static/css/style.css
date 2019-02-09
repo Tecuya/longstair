@@ -101,12 +101,13 @@ div.editbox {
 }
 
 button {
-  margin-top: 10px;
   background-color: #777;
   color: white;
-  font-size: 16pt;
-  border-radius: 7px;
+  font-size: 10pt;
+  border-radius: 4px;
   background-color: #222;
+  padding: 3px;
+  margin-left: 8px;
 }
 
 div#relation_creation {
@@ -123,6 +124,7 @@ div.relation_history {
   padding-bottom: 8px;
   border-bottom: dashed #444 2px;
   margin-bottom: 8px;
+  padding-top: 8px;
 }
 
 div.chosen_link_existing {
@@ -133,7 +135,7 @@ div#forest {
   display: flex;
   flex-flow: column;
   align-items: stretch;
-  height: 90%;
+  height: 97%;
 }
 
 div#text_area {
@@ -148,7 +150,12 @@ div#text_area {
 
 div#user_area {
   flex: 1 1 auto;
-  height: 500px;
+  height: 300px;
+}
+
+div#relations_list {
+  overflow: auto;
+  height: 100%;
 }
 
 div.relation_list_item_left {
@@ -166,4 +173,38 @@ div.node_attribution {
   float: right;
 }
 
+input#relation_creation_text {
+  font-family: monospace;
+}
 
+div.relation_link {
+  background-color: #000;
+}
+
+div.relation_link_text {
+  float: left;
+}
+
+div.relation_link_input {
+  float: left;
+  padding-left: 8px;
+}
+
+input#relation_link_dest {
+  font-size: 12pt;
+  padding: 2px;
+  maring-left: 10px;
+}
+
+div.relation_link_button {
+  float: left;
+}
+
+div.cleardiv {
+  clear: both;
+}
+
+div.error {
+  color: red;
+  font-weight: bold;
+}

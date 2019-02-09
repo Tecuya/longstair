@@ -1,42 +1,67 @@
 from django.shortcuts import render
-from django.http import JsonResponse, HttpResponseNotFound
+from django.http import JsonResponse, HttpResponseNotFound, HttpResponseNotAllowed
+
 import ujson
+from slugify import slugify
 
 from .models import Node, Relation
 
 
-def xhr_relation_by_slug(request, slug):
+def xhr_create_relation(request):
 
-    if request.method == 'POST':
-        doc = ujson.loads(request.body)
+    if not request.method == 'POST':
+        return HttpResponseNotAllowed('<h1>POST only on this endpoint..</h1>')
 
-        nqs = Node.objects.filter(slug=doc['parent'])
-        if len(nqs) == 0:
-            return HttpResponseNotFound('<h1>No such parent</h1>')
-        parent = nqs[0]
+    doc = ujson.loads(request.body)
 
+    new_relation_slug = slugify(doc['text'])
+
+    # resolve parent node
+    nqs = Node.objects.filter(slug=doc['parent'])
+    if len(nqs) == 0:
+        return HttpResponseNotFound('<h1>No such parent</h1>')
+    parent = nqs[0]
+
+    if 'child' in doc:
+        # if client specified a child slug it MUST be found or we fail
         nqs = Node.objects.filter(slug=doc['child'])
-        if len(nqs) > 0:
-            child = nqs[0]
-
-        else:
-            child, created = Node.objects.get_or_create(
-                author=request.user,
-                name=doc['child_text'],
-                slug=doc['child'])
-
-        relation, created = Relation.objects.get_or_create(
-            author=request.user,
-            slug=doc['slug'],
-            parent=parent,
-            child=child,
-            text=doc['text'])
+        if len(nqs) == 0:
+            return HttpResponseNotFound('<h1>No such child</h1>')
+        child = nqs[0]
 
     else:
-        return HttpResponseNotFound('<h1>No such relation</h1>')
+        # if client did NOT specify a child slug we generate one
+        # which MUST be unique, if we collide we try again
+
+        uniqueifier = 0
+        new_slug = new_relation_slug
+
+        while True:
+
+            if uniqueifier != 0:
+                new_slug = new_relation_slug + '-' + str(uniqueifier)
+
+            nqs = Node.objects.filter(slug=new_slug)
+            if len(nqs) == 0:
+                break
+
+            uniqueifier += 1
+
+        child = Node.objects.create(
+            author=request.user,
+            name=doc['text'],
+            slug=new_slug)
+
+    relation, created = Relation.objects.get_or_create(
+        author=request.user,
+        slug=slugify(doc['text']),
+        parent=parent,
+        child=child,
+        text=doc['text'])
 
     return JsonResponse(
         {'slug': relation.slug,
+         'child': relation.child.slug,
          'text': relation.text,
          'author': relation.author.username,
          'created': relation.created.strftime('%Y-%m-%d')},
@@ -44,6 +69,7 @@ def xhr_relation_by_slug(request, slug):
 
 
 def xhr_node_by_slug(request, slug):
+
     nqs = Node.objects.filter(slug=slug)
     if nqs is None or len(nqs) == 0:
         return HttpResponseNotFound('<h1>No such node</h1>')
@@ -56,6 +82,9 @@ def xhr_node_by_slug(request, slug):
         node.slug = doc['slug']
         node.text = doc['text']
         node.save()
+
+    elif request.method == 'DELETE':
+        node.delete()
 
     return JsonResponse(
         {'name': node.name,
@@ -76,7 +105,7 @@ def xhr_relations_for_parent_node(request, slug):
 
           'author': r.author.username,
           'created': r.created.strftime('%Y-%m-%d')}
-         for r in Relation.objects.filter(parent__slug=slug)],
+         for r in Relation.objects.filter(parent__slug=slug).order_by('-created')],
         safe=False)
 
 
@@ -96,7 +125,7 @@ def xhr_relations(request, slug, text=None):
 
           'author': r.author.username,
           'created': r.created.strftime('%Y-%m-%d')}
-         for r in Relation.objects.filter(**filters)],
+         for r in Relation.objects.filter(**filters).order_by('-created')],
         safe=False)
 
 

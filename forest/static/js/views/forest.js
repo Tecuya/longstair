@@ -1,9 +1,9 @@
 define(
-    ['jquery', 'underscore', 'backbone', 'models/node', 'views/relations',
+    ['jquery', 'underscore', 'backbone', 'models/node', 'models/relation', 'views/relations',
         'collections/relations', 'views/node', 'views/node_edit',
-        'util/fetch_completions', 'tpl!templates/forest', 'tpl!templates/relation_history'],
-    function($, _, Backbone, Node, RelationsView, Relations,
-        NodeView, NodeEdit, fetch_completions, foresttpl, relationhistorytpl) {
+        'util/fetch_completions', 'tpl!templates/forest', 'tpl!templates/command_history'],
+    function($, _, Backbone, Node, Relation, RelationsView, Relations,
+        NodeView, NodeEdit, fetch_completions, foresttpl, commandhistorytpl) {
 
         return Backbone.View.extend({
 
@@ -14,7 +14,8 @@ define(
             },
 
             elements: {
-                'prompt': 'input#prompt'
+                'prompt': 'input#prompt',
+                'text_area': 'div#text_area'
             },
 
             initialize: function() {
@@ -34,6 +35,7 @@ define(
             },
 
             keypress_prompt: function(evt) {
+                var self = this;
 
                 var prompt_contents = this.$el.find(this.elements.prompt).val();
 
@@ -45,19 +47,41 @@ define(
 
                 } else if (evt.which == 13) {
 
+                    var log_command = function() {
+                        self.$el.find(self.elements.text_area).append(commandhistorytpl({ command: prompt_contents }));
+                    };
+
                     // enter
                     if (prompt_contents == '/edit') {
+                        log_command();
                         Backbone.history.navigate('/forest/' + this.current_node.get('slug') + '/edit', true);
-                    }
 
-                    if (prompt_contents.slice(0, 3) == '/go') {
+                    } else if (prompt_contents == '/delete') {
+                        log_command();
+                        this.current_node.destroy({
+                            wait: true,
+                            success: function() { history.back(); },
+                            error: function(node, resp) {
+                                self.add_error(resp);
+                            }
+                        });
+
+                    } else if (prompt_contents.slice(0, 3) == '/go') {
+                        log_command();
                         Backbone.history.navigate('/forest/' + prompt_contents.slice(4), true);
+
+                    } else if (prompt_contents[0] == '/') {
+                        log_command();
+                        self.add_error('Invalid command: ' + prompt_contents);
+                    } else {
+                        // behave as if down arrow.. this way double RET will create text
+                        this.$el.find('div[tabindex=0]').focus();
+
                     }
                 }
 
                 // without this short timeout it seems the event fires
                 // before jquerys val could get the updated text
-                var self = this;
                 window.setTimeout(
                     function() {
                         if (prompt_contents.length == 0 || prompt_contents[0] == '/') {
@@ -72,7 +96,7 @@ define(
                                 self.relations_collection.set_search_text(prompt_contents);
                                 self.relations_collection.fetch({
                                     success: function() { self.relations_view.render_list(); },
-                                    error: function() { self.$el.html('Server error.... reload?'); }
+                                    error: function(col, err) { self.add_error(err); }
                                 });
                             });
                     }, 10);
@@ -82,10 +106,51 @@ define(
                 var selected_relation = this.relations_collection.findWhere({ 'slug': slug });
 
                 if (selected_relation) {
-                    this.$el.find('div#text_area').append(relationhistorytpl({ relation: selected_relation }));
+                    this.$el.find(this.elements.text_area).append(commandhistorytpl({ command: selected_relation.get('text') }));
                     Backbone.history.navigate('/forest/' + selected_relation.get('child'), true);
                 }
             },
+
+            create_relation_to_node: function(node) {
+
+                var relation = new Relation();
+                relation.set('text', this.$el.find(this.elements.prompt).val());
+                relation.set('parent', this.current_node.get('slug'));
+
+                // if we do not pass in child slug, django will create a new node automatically.  this allows this method
+                // to pass in node to link to existing, or undefined to create new.
+                var creating = true;
+                if (node) {
+                    relation.set('child', node.get('slug'));
+                    creating = false;
+                }
+
+                var self = this;
+                relation.save(
+                    {},
+                    {
+                        success: function() {
+                            if (creating) {
+                                // if we just created the relation we need to add it to the collection
+                                self.relations_collection.add(relation);
+                            }
+                            self.go_to_relation(relation.get('child'));
+                        },
+                        error: function(err, resp) {
+                            self.add_error(resp);
+                        }
+                    }
+                );
+
+            },
+
+            add_error: function(err) {
+                this.$el.find(this.elements.text_area).append('<div class="error">' + err + '</div>');
+            },
+
+
+            ////////////
+            // routes
 
             node_view: function(slug) {
                 var self = this;
@@ -95,7 +160,7 @@ define(
                         success: function() {
 
                             var node_view = new NodeView({ node: self.current_node });
-                            node_view.setElement(self.$el.find('div#text_area'));
+                            node_view.setElement(self.$el.find(self.elements.text_area));
 
                             if (self.current_node.get('slug') != '_') {
                                 node_view.render();
@@ -107,7 +172,7 @@ define(
                             self.relations_collection.reset();
                             self.relations_collection.fetch({
                                 success: function() { self.relations_view.render_list(); },
-                                error: function() { self.$el.html('Server error.... reload?'); }
+                                error: function(col, resp) { self.add_error(resp); }
                             });
 
                             // clear prompt
@@ -116,7 +181,7 @@ define(
                             // redraw relations view
                             self.relations_view.render();
                         },
-                        error: function() { self.error(); }
+                        error: function(col, resp) { self.add_error(resp); }
                     }
                 );
             },
@@ -146,7 +211,7 @@ define(
                             // focus name
                             self.$el.find('input[name=name]').focus();
                         },
-                        error: function() { self.error(); }
+                        error: function(col, resp) { self.add_error(resp); }
                     }
                 );
             }

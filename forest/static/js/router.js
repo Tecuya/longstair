@@ -9,8 +9,8 @@ define(
             },
 
             node_entry: function() { forest.node_view('_'); },
-            node_view: forest.node_view,
-            node_edit: forest.node_edit
+            node_view: function(slug) { forest.node_view(slug); },
+            node_edit: function(slug) { forest.node_edit(slug); }
         });
     }
 );

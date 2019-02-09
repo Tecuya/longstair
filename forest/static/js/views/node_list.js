@@ -18,7 +18,7 @@ define(
             },
 
             initialize: function(options) {
-                this.relations_view = options.relations_view;
+                this.forest_view = options.forest_view;
                 this.nodes = new Nodes();
             },
 
@@ -59,20 +59,21 @@ define(
 
                 if (evt.which == 38) { // up arrow
                     if (tabindex == 0) {
-                        $('input[name=destination]').focus();
+                        $('input#relation_link_dest').focus();
                     } else {
                         $('div.node_list_item[tabindex=' + (tabindex - 1) + ']').focus();
                     }
+
                 } else if (evt.which == 40) { // down arrow
                     $('div.node_list_item[tabindex=' + (tabindex + 1) + ']').focus();
+
                 } else if (evt.which == 13) {
                     this.click_list(evt);
                 }
             },
 
             click_list: function(evt) {
-                this.relations_view.create_to_existing_branch(
-                    this.nodes.findWhere({ slug: $(evt.target).data('slug') }));
+                this.forest_view.create_relation_to_node(this.nodes.findWhere({ slug: $(evt.target).data('slug') }));
             }
 
         });
