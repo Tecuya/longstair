@@ -2,7 +2,7 @@ body {
   font-family: Arial, Helvetica, sans-serif;
   background-color: #333;
   color: #fff;
-  font-size: 16pt;
+  font-size: 13pt;
 }
 
 a:link {
@@ -30,7 +30,7 @@ div.title {
 textarea {
   background-color: #777;
   color: white;
-  font-size: 16pt;
+  font-size: 13pt;
   border: 2px solid white;
   border-radius: 7px;
   padding: 8px;
@@ -39,7 +39,7 @@ textarea {
 input {
   background-color: #777;
   color: white;
-  font-size: 16pt;
+  font-size: 13pt;
   border: 2px solid white;
   border-radius: 7px;
   padding: 8px;
@@ -83,7 +83,7 @@ div.list_item:focus {
 }
 
 div.creation_title {
-  font-size: 17pt;
+  font-size: 14pt;
 }
 
 div.editlink {
@@ -102,7 +102,7 @@ div.node_text {
 }
 
 div.editbox {
-  font-size: 14pt;
+  font-size: 13pt;
   padding: 9px;
 }
 

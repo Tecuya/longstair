@@ -166,7 +166,7 @@ define(
             },
 
             add_error: function(err) {
-                this.$el.find(this.elements.text_area).append('<div class="error">' + err + '</div>');
+                this.$el.find(this.elements.text_area).append('<div class="error">Error: ' + err.responseText + '</div>');
             },
 
             scroll_bottom: function() {
@@ -190,10 +190,8 @@ define(
                             self.current_node_view.setElement(self.$el.find(self.elements.text_area));
 
                             self.node_counter += 1;
-                            if (self.current_node.get('slug') != '_') {
-                                self.current_node_view.render(self.node_counter);
-                                self.scroll_bottom();
-                            }
+                            self.current_node_view.render(self.node_counter);
+                            self.scroll_bottom();
 
                             // update relations collection for new node and reset
                             self.relations_collection.set_parent_node(self.current_node);
