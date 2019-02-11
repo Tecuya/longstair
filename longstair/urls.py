@@ -3,7 +3,6 @@ from django.conf import settings
 from django.urls import path, re_path
 
 import comics.views
-import forest.views
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 

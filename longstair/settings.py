@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'mph19x15j!fwuo2x+6@-(8$2n$a9%f669gl61!gl8uhq$226+p'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['longstair.com','127.0.0.1','localhost']
 
