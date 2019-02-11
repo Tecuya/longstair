@@ -32,7 +32,6 @@ ALLOWED_HOSTS = ['longstair.com','127.0.0.1','localhost']
 
 INSTALLED_APPS = [
     'foundation.apps.FoundationConfig',
-    'forest.apps.ForestConfig',
     'comics.apps.ComicsConfig',
     'django.contrib.admin',
     'django.contrib.auth',
