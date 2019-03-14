@@ -4,16 +4,16 @@ from comics.models import Comic
 
 def comic(request, comic_id=None):
 
-    first_comic = Comic.objects.all().order_by('created')[0]
-    last_comic = Comic.objects.all().order_by('-created')[0]
+    first_comic = Comic.objects.filter(active=True).order_by('created')[0]
+    last_comic = Comic.objects.filter(active=True).order_by('-created')[0]
 
-    if comic_id != None:
+    if comic_id is not None:
         comic = Comic.objects.get(id=comic_id)
     else:
         comic = last_comic
 
-    next_comics = Comic.objects.filter(created__gt=comic.created).order_by('created')
-    prev_comics = Comic.objects.filter(created__lt=comic.created).order_by('-created')
+    next_comics = Comic.objects.filter(active=True, created__gt=comic.created).order_by('created')
+    prev_comics = Comic.objects.filter(active=True, created__lt=comic.created).order_by('-created')
 
     ctx = {
         'comic': comic,
