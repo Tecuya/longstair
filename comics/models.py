@@ -9,4 +9,4 @@ class Comic(models.Model):
     active = models.BooleanField(default=True)
 
     def __str__(self):
-        return '{} {} {}'.format(self.name, self.filename, self.created)
+        return '{} {} {} {}'.format(self.name, self.filename, self.created, '' if self.active else '- INACTIVE')

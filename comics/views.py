@@ -2,6 +2,7 @@ from django.shortcuts import render
 
 from comics.models import Comic
 
+
 def comic(request, comic_id=None):
 
     first_comic = Comic.objects.filter(active=True).order_by('created')[0]
